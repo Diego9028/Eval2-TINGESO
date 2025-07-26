@@ -1,0 +1,140 @@
+version: "3.8"
+
+services:
+
+  # Nginx for backend load balancing
+  nginx-backend:
+    container_name: kartingrm-nginx-backend-container
+    image: nginx:latest
+    restart: always
+    ports:
+      - 8090:8090
+    volumes:
+      - ./nginx-backend.conf:/etc/nginx/nginx.conf
+    networks:
+      - backend-network
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
+
+  # Nginx for frontend load balancing
+  nginx-frontend:
+    container_name: kartingrm-nginx-frontend-container
+    image: nginx:latest
+    restart: always
+    ports:
+      - 8070:8070
+    volumes:
+      - ./nginx-frontend.conf:/etc/nginx/nginx.conf
+    networks:
+      - frontend-network
+    depends_on:
+      - frontend1
+      - frontend2
+      - frontend3
+
+  # Frontend services
+  frontend1:
+    container_name: frontend-1
+    image: tgustafsson/frontend:latest
+    ports:
+      - 3001:3000
+    networks:
+      - frontend-network
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  frontend2:
+    container_name: frontend-2
+    image: tgustafsson/frontend:latest
+    ports:
+      - 3002:3000
+    networks:
+      - frontend-network
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  frontend3:
+    container_name: frontend-3
+    image: tgustafsson/frontend:latest
+    ports:
+      - 3003:3000
+    networks:
+      - frontend-network
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  # Backend services
+  backend1:
+    container_name: backend-1
+    image: tgustafsson/backend:latest
+    ports:
+      - 8091:8090
+    environment:
+      DB_HOST: kartingrm-postgres-container
+      DB_PORT: 5432
+    networks:
+      - backend-network
+    depends_on:
+      - postgres
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  backend2:
+    container_name: backend-2
+    image: tgustafsson/backend:latest
+    ports:
+      - 8092:8090
+    environment:
+      DB_HOST: kartingrm-postgres-container
+      DB_PORT: 5432
+    networks:
+      - backend-network
+    depends_on:
+      - postgres
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  backend3:
+    container_name: backend-3
+    image: tgustafsson/backend:latest
+    ports:
+      - 8093:8090
+    environment:
+      DB_HOST: kartingrm-postgres-container
+      DB_PORT: 5432
+    networks:
+      - backend-network
+    depends_on:
+      - postgres
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  # Database service
+  postgres:
+    container_name: kartingrm-postgres-container
+    image: postgres:latest
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+    networks:
+      - backend-network
+    environment:
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - 5435:5432
+
+volumes:
+  postgres-volume:
+networks:
+  frontend-network:
+  backend-network:

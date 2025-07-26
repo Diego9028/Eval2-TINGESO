@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: tarifa-service
+
+  cloud:
+    config:
+      enabled: true
+      uri: http://config-server-service:8081
+
+  datasource:
+    url: jdbc:postgresql://postgres-service:5432/bd_tarifas
+    username: postgres
+    password: grupo4
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect

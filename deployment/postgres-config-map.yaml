@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config-map
+  labels:
+    app: postgres-config-map
+data:
+  DB_HOST_CLIENTE: cliente-db-service
+  DB_PORT_CLIENTE: "5432"
+  DB_NAME_CLIENTE: cliente_db

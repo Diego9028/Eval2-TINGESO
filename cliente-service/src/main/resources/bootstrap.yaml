@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: cliente-service
+
+  cloud:
+    config:
+      enabled: true
+      uri: http://config-server-service:8081
+
+  datasource:
+    url: jdbc:postgresql://cliente-db-service:5432/cliente_db
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
